@@ -32,6 +32,9 @@ nav:
       - Foreign: wallet/foreign.md
       - Errors: wallet/errors.md
 
+  - Easy Miner:
+    - Welcome: easyminer/index.md
+
   - Python SDK:
     - Introduction: python_sdk/under_construction.md
 #    - Node class: python_sdk/node.md
