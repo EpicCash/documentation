@@ -1,0 +1,12 @@
+.center {
+    display: block;
+    margin: 0 auto;
+}
+
+.round {
+    border-radius: 8px;
+}
+
+.img-alt-text {
+    margin-bottom: 0;
+}

@@ -36,6 +36,8 @@ nav:
     - Introduction: python_sdk/under_construction.md
 #    - Node class: python_sdk/node.md
 #    - Wallet class: python_sdk/wallet.md
+  - Giver Of Epic:
+      Introduction: giverofepic/index.md
 
 theme:
     favicon: assets/favicon.png
@@ -83,6 +85,9 @@ theme:
         example: octicons/beaker-16
         quote: octicons/quote-16
 
+extra_css:
+    - 'assets/extra.css'
+
 markdown_extensions:
   - pymdownx.inlinehilite
   - pymdownx.superfences
@@ -94,6 +99,7 @@ markdown_extensions:
   - pymdownx.keys
   - pymdownx.mark
   - admonition
+  - attr_list
   - pymdownx.tabbed:
       alternate_style: true
   - pymdownx.highlight:
