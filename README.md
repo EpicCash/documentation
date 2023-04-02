@@ -9,8 +9,11 @@ Made with [Material for MkDocs](https://squidfunk.github.io/mkdocs-material/) fr
 ```
 git clone https://github.com/EpicCash/documentation.git
 cd documentation
-pipenv install requirements.txt
 ```
+
+### install mkdocs
+
+Follow the instructions at https://learn.openwaterfoundation.org/owf-learn-mkdocs/install/
 
 ### serve via localhost for changes preview
 ```
