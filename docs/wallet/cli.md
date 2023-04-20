@@ -513,8 +513,8 @@ are in an inconsistent state, you can initiate a manual scan to attempt to fix o
 
 > Optional scan arguments
     ```
-    `-d` `--delete-unconfirmed`     scan and cancel all pending transactions, freeing up any locked outputs.
-    `-h` `--start-height`           specify a block height from which to start the manual scan.
+    * `-d` `--delete-unconfirmed` if present, scan and cancel all pending transactions, freeing up any locked outputs.
+    * `-h` `--start-height` lets you specify a block height from which to start the manual scan.
     ```
 ---
 
