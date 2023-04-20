@@ -2,117 +2,200 @@
 ## File Structure
 
 > By default, epic will create all wallet files in the hidden directory `.epic` 
-> under your home directory (i.e. `~/.epic`). You can also create and use a wallet with 
+> under your home directory (i.e. `/home/<user>/.epic/main/`). You can also create and use a wallet with 
 > data files in a custom directory, as will be explained later.
 >
-> A epic wallet maintains its state in an Lightning Memory-Mapped Database (LMDB), with the master seed 
+> The EPIC Wallet maintains its state in SQLITE database, with the master seed 
 > stored in a separate file. When creating a new wallet, the file structure should be as follows:
 
 ```text
-[wallet directory]
-├── epic-wallet.log
-├── epic-wallet.toml
-├── tor
-└── wallet_data
-    ├── db
-    │   └── lmdb
-    │
-    └── wallet.seed
+/home/<user>/.epic/main/
+    ├── epic-wallet.log
+    ├── epic-wallet.toml
+    ├── tor
+    └── wallet_data
+        ├── wallet.seed
+        ├── saved_txs
+        └── db
+            └── sqlite
+                ├── epic.db
+                ├── epic.db-shm
+                └── epic.db-wal
 ```
 
-* `epic-wallet.toml` contains configuration information for the wallet. You can modify values within to change ports, the address of your epic node, or logging values.
+* `wallet.seed` wallet master key encrypted with your password, access to that file gives full control over the wallet. 
 
-* `wallet.seed` is your master seed file; the private keys of all your outputs are derived from it, and its contents are encrypted with your wallet password. The seed file can be recovered using the seed phrase.
+* `tor` directory with TOR configuration used for TOR transaction method
 
-* `tor` folder contains Tor configuration files used by the wallet listener. There should be no need to manipulate anything in this directory manually.
+---
 
-??? note "Tor Configuration"
+## Wallet Settings
 
-    `epic-wallet.toml` contains a [tor] section used to configure values when sending or listening via TOR:
+* `epic-wallet.toml` is a configuration file for the wallet, default values are generated when wallet is initialized.
 
-    * `use_tor_listener` specifies whether the Tor listener should also be invoked when starting the wallet listener via `listen` (default = true).
+??? note "Wallet Section"
 
-    * `socks_proxy_addr` contains the listening address of TOR's socks proxy port. This should generally be left alone.
+    > **[wallet]** section used to configure default wallet settings:
 
+    ```toml
+    chain_type = "Mainnet"
+    
+    #host IP for wallet listener, change to "0.0.0.0" to receive epics
+    api_listen_interface = "127.0.0.1"
+    
+    #path of TLS certificate file, self-signed certificates are not supported
+    #tls_certificate_file = ""
+    #private key for the TLS certificate
+    #tls_certificate_key = ""
+    
+    #port for wallet listener
+    api_listen_port = 3415
+    
+    #port for wallet owner api
+    owner_api_listen_port = 3420
+    
+    #path of the secret token used by the API to authenticate the calls
+    #comment it to disable basic auth
+    api_secret_path = "/home/<user>/.epic/main/.owner_api_secret"
+    
+    #location of the node api secret for basic auth on the Epic API
+    node_api_secret_path = "/home/<user>/.epic/main/.api_secret"
+    
+    #where the wallet should find a running node
+    check_node_api_http_addr = "https://epic-radar.com/node"
+    
+    #include the foreign API endpoints on the same port as the owner
+    #API. Useful for networking environments like AWS ECS that make
+    #it difficult to access multiple ports on a single service.
+    owner_api_include_foreign = false
+    
+    #where to find wallet files (seed, data, etc)
+    data_file_dir = "/home/<user>/.epic/main/wallet_data"
+    
+    #If true, don't store calculated commits in the database
+    #better privacy, but at a performance cost of having to
+    #re-calculate commits every time they're used
+    no_commit_cache = false
+    
+    #Whether to use the black background color scheme for command line
+    dark_background_color_scheme = true
+    
+    #The exploding lifetime for keybase notification on coins received.
+    #Unit: Minute. Default value 1440 minutes for one day.
+    #Refer to https://keybase.io/blog/keybase-exploding-messages for detail.
+    #To disable this notification, set it as 0.
+    keybase_notify_ttl = 1440
+    ```
+
+??? note "Epicbox Section"
+
+    > **[epicbox]** section used to configure epicbox transaction method:
+    ```toml
+    # Domain of the epicbox server to connect to
+    epicbox_domain = "epicbox.giverofepic.com"
+    
+    # Port of the domain of the epicbox server to connect
+    epicbox_port = 443
+    
+    # Whether to allow unsecure connections without SSL (default false)
+    epicbox_protocol_unsecure = false
+    
+    # Index of the epicbox address (default 0)
+    epicbox_address_index = 0
+    
+    # Time interval in seconds between epicbox listener updates (default 10 seconds)
+    epicbox_listener_interval = 10
+    ```
+
+??? note "Tor Section"
+
+    > **[tor]** section used to configure values when sending or listening via TOR:
+    ```toml
+    # Whether to start tor listener on listener startup (default true)
+    use_tor_listener = true
+    
+    # TOR (SOCKS) proxy server address
+    socks_proxy_addr = "127.0.0.1:59050"
+    
+    # Directory to output TOR configuration to when sending
+    send_config_dir = "/home/<user>/.epic/main/"
+    ```
+
+??? note "Logging Section"
+
+    > **[logging]** section used to configure logging parameters:
+    ```toml
+    #whether to log to stdout
+    log_to_stdout = true
+    
+    #log level for stdout: Error, Warning, Info, Debug, Trace
+    stdout_log_level = "Debug"
+    
+    #whether to log to a file
+    log_to_file = true
+    
+    #log level for file: Error, Warning, Info, Debug, Trace
+    file_log_level = "Info"
+    
+    #log file path
+    log_file_path = "/home/<user>/.epic/main/epic-wallet.log"
+    
+    #whether to append to the log file (true), or replace it on every run (false)
+    log_file_append = true
+    
+    #maximum log file size in bytes before performing log rotation
+    #comment it to disable log rotation
+    log_max_size = 16777216
+    log_max_files = 32
+    
+    ```
+
+---
 
 ## Commands
-
-### `help`
-
-`epic-wallet help` will display all the commands and every global flag.
-</br> To get additional info about a specific command type `epic-wallet help [command]`, e.g:
-
-```text
-epic-wallet help send
-```
-
-!!! note ""
-    You can also pass `--help` or `-h`.
 
 ### `init`
 Before doing anything else, the wallet files need to be generated via the `init` command:
 
-```text
+```
 epic-wallet init
 ```
 
-You'll be prompted to enter a password for the new wallet. It will be used to encrypt your `master.seed` file and you'll be asked to type it for most wallet commands.
+You'll be prompted to enter a password for the new wallet. It will be used to encrypt your private key,
+and you'll be asked to type it for most wallet commands.
 
-By default, your wallet files will be placed into `~/.epic`. Alternatively, if you'd like to run a wallet in a directory of your choice, you can create one in the current directory by using flag `-h`, e.g:
+By default, your wallet files will be placed into `/home/<user>/.epic/main/`. Alternatively, if you'd like to run 
+a wallet in a directory of your choice, you can create one in the current directory by using flag `-h`, e.g:
 
-```text
+```
 epic-wallet init -h
 ```
 
-This will create all the needed data files, including `epic-wallet.toml` and `wallet.seed`, in the current directory. When running any `epic-wallet` command, epic will check the working directory if these files exist. If not, it will use the default location `~/.epic`.
+This will create all the needed data files, including `epic-wallet.toml` and `wallet.seed`, in the current directory. 
+When running any `epic-wallet` command, epic will check the working directory if these files exist. 
+If not, it will use the default location `/home/<user>/.epic/main/`.
 
-Upon a successful `init`, the wallet prints a 24-word recovery phrase, which you should write down and store in a non-digital format. This phrase can be used to re-create your master seed file if it gets lost or corrupted, or if you forget the wallet password.
+Upon a successful `init`, the wallet prints a 24-word recovery phrase, **which you should always save somewhere safe**. 
+This phrase is to recover your master seed file if it gets lost or corrupted, or if you forget the wallet password.
 
 !!! note ""
     If you'd prefer to use a 12-word recovery phrase, you can use the `-s` `--short_wordlist` flag.
 
-### `init --recover`
-If you need to recreate your wallet from an existing seed, you can `init` a wallet with a recovery phrase using the `-r` `--recover` flag. For example, the following command initializes a wallet in the current directory.
-
-```text
-epic-wallet init -hr
-```
-
-```text
-File /home/custom_dir/epic-wallet.toml configured and created
-Please enter your recovery phrase:
-```
-On the first run, the wallet will scan the entire chain and restore any outputs that belong to you.
-<hr />
-
-### `account`
-The `account` command is used to manage wallet accounts. Let's print a list of your existing accounts:
-
-```text
-epic-wallet account
-```
-
-Accounts could be thought of as somewhat similar to different bank accounts under the same name. Each account acts as a separate wallet, but they are all derived from the same master seed. The `default` account is created when you initialize the wallet.
-
-To create a new account, pass the argument `-c` `--create`.
-
-```text
-epic-wallet account -c freeman
-```
-
-This will create a new account called 'freeman'.
-
-All `epic-wallet` commands can then be passed the argument `-a` to specify an account for the command (otherwise `default` account is used), e.g:
-
-```text
-epic-wallet -a freeman info
-```
-<hr />
+!!! tip "Initialize new wallet using mnemonic seed phrase"
+    If you need to recreate your wallet from an existing seed, you can `init` a wallet with a recovery phrase using 
+    the `-r` `--recover` flag. For example, the following command initializes a recovered wallet in the current directory.
+    
+    ```text
+    epic-wallet init -hr
+    ```
+    
+    On the first run, the wallet will scan the entire chain and restore any outputs that belong to it.
+---
 
 ### `info`
 The `info` command summarizes wallet account balance.
 
-```text
+```
 epic-wallet info
 ```
 !!! text "Wallet Summary"
@@ -128,82 +211,188 @@ epic-wallet info
     ```
 !!! info "How to read balance"
     * **Confirmed Total** is your balance including both spendable coins and those awaiting confirmation.
-    * **Awaiting Confirmation** denotes the balance from transactions that have appeared on-chain, but for which your wallet is waiting a set number of blocks before treating them as spendable (default is 10 blocks).
-    * **Awaiting Finalization** is the balance from transactions that have not yet appeared on-chain. This could be due to the other party not having broadcast the transaction yet. Also, when you are the sender of a transaction, your change output will be denoted in this field as well.
-    * **Locked by previous transaction** shows the amount of coins locked by a previous transaction you have made and that is currently awaiting finalization. This is usually made up both of the amount being sent and of the change outputs waiting to be returned back to your wallet. </br>
-    Once the transaction appears on-chain, this balance unlocks and the output that was used will again become available for spending.
+    * **Awaiting Confirmation** denotes the balance from transactions that have appeared on-chain, 
+        but for which your wallet is waiting a set number of blocks before treating them as spendable (default is 10 blocks).
+    * **Awaiting Finalization** is the balance from transactions that have not yet appeared on-chain. This could be 
+        due to the other party not having broadcast the transaction yet. Also, when you are the sender of a transaction, 
+        your change output will be denoted in this field as well.
+    * **Locked by previous transaction** shows the amount of coins locked by a previous transaction you have made and 
+        that is currently awaiting finalization. This is usually made up both of the amount being sent and of the change 
+        outputs waiting to be returned back to your wallet. </br>
+        Once the transaction appears on-chain, this balance unlocks and the output that was used will 
+        again become available for spending.
 
 ### `listen`
-The `listen` command opens up a listener (by default `TOR` and `HTTP/S`).
+Listener is a long-running background process that listens for incoming transaction slates to process them. 
 
-```text
-epic-wallet listen
-```
+EPIC transactions are interactive, means both parties have to actively participate during the transaction 
+to finish the process, listeners are here to automate the whole process for the user.
 
-This will automatically configure a TOR hidden service and makes the wallet listen for 
-incoming transactions. Your wallet will listen for requests until the process is cancelled (`<Ctrl-C>`).
+There are multiple transaction methods with corresponding listeners to handle them.
+Your wallet will listen for requests until the process is cancelled (`<Ctrl-C>`).
 
-!!! note ""
-    `tor` or `tor.exe` need to be available on the system PATH.
+=== "HTTP/S + TOR Listener"
+    To start listening for transactions sent via HTTP/S or TOR method:
+    ```
+    epic-wallet listen -m http
+    ```
+    > Optional arguments:
+    ```
+    -n, --no_tor        Don't start TOR listener when starting HTTP listener
+    -V, --version       Prints version information
+    -l, --port <port>   Port on which to run the wallet listener
+    ```
+    !!! note ""
+        In order to use the TOR make sure its client is available in your system and added to env PATH.
+    
+
+=== "EPICBOX Listener"
+    To start listening for transactions sent via **EPICBOX** method:
+    ```
+    epic-wallet listen -m epicbox
+    ```
+    > Optional arguments:
+    ```
+    -i, --interval <interval>       Epicbox listener update interval duration in seconds
+                                    [possible values: 2, 5, 10, 30, 60, 120]
+    -V, --version                   Prints version information
+    ```
+---
 
 ### `send`
 The `send` command is the first step of building an interactive transaction. 
-The transaction can either be an instant synchronous exchange through `TOR` and `HTTP/S`, 
+The transaction can either be an instant, automated and synchronous exchange through `HTTP/S`, `EPICBOX` or `TOR` methods, 
 or it can be an asynchronous process, in which each step is done manually by exchanging 
-`transaction files`
+`transaction files` between the users. 
 
 === "HTTP/S Method"
-    ```text
+    To use this method both sender and receiver have to run `HTTP/S Listener`. 
+    
+    Receiver should share the URL address (IP or domain) pointing to his listener and make sure 
+    it is reachable for the sender, i.e. port (by default `3415`) is open and firewall rule created.
+
+    Transaction will be successfully finished if and only if when both parties are online during the process 
+    which should take no longer than few seconds. Failed transaction can be cancelled by sender to unlock locked funds.
+
+    ```
     epic-wallet send -d <http_address> <amount>
     ```
+=== "EPICBOX Method"
+    To use this method both sender and receiver have to run `EPICBOX Listener`. 
+
+    EPICBOX server will work as temporary storage to make it possible to transact without the need of both parties 
+    being online at the same time. It will also remove the need of sharing receivers IP address and handling the ports.
+
+    Receiver should share with the sender the full EPICBOX address:
+
+    !!! info "How to get your EPICBOX receiving address"
+        Type `epic-wallet address` and copy the first address displayed in the console described as
+        `Address for account - <account name>`.
+
+        Full ddress will also require adding the epicbox domain from the `epic-wallet.toml` file
+        (by default `epicbox.epic.tech`).
+
+        The full address should look similiar to:
+        > esYeNScdKxUbm2tag16xAQ4k31oQAR5V5TWUUsZPLDKM1eCsBmhF@epicbox.epic.tech
+
+    To complete the transaction both parties have to be online at some point to receive transaction slate 
+    and sign it, this process is fully automated. Failed transaction can be cancelled by sender to unlock locked funds.
+
+    ```
+    epic-wallet send -m epicbox -d <epicbox_address> <amount>
+    ```
 === "TOR Method"
-    ```text
+    To use this method both sender and receiver have to run `HTTP/S Listener`. 
+
+    Transaction will be successfully finished if and only if when both parties are online during the process 
+    which should take less than a minute. Failed transaction can be cancelled by sender to unlock locked funds.
+    
+    !!! info "How to get your TOR receiving address"
+        Type `epic-wallet address` and copy the third address displayed in the console described as 
+        `TOR Onion V3 Address for account - <account name>`
+
+        The address should look similar to:
+        > 23goa5mot5phnu3vrepdmd5brsh23wp5tfgcmekdbp77rv2jsaqci6ad
+
+    ```
     epic-wallet send -d <tor_address> <amount>
     ```
-=== "File Method"
-    ```text
-    epic-wallet send -d <file_name> <amount>
-    ```
-<br />
 
-!!! info "more send flags"
-    * `-f` `--fluff` if present, ignore the dandelion relay protocol. Dandelion bounces your transactions directly through several nodes in a stem phase, after which the transaction randomly fluffs (broadcast) to the rest of the network.
-    * `-n` `--no_payment_proof` if present, do not request the data required for a payment proof. This shortens the slatepack message length.
-    * `-e` `--estimate-selection` if present, performs a "dry-run" of creating the transaction, without actually doing anything and locking the funds. It then lists different output selection strategies (outlined below) and their possible effect on your wallet outputs, if chosen.
-    * `-s` `--selection` allows you to choose between two output selection strategies, `small` and `all`. The default strategy is `small`, which includes the *minimum* number of inputs to cover the amount, starting with the smallest value output. In contrast, using `all` consolidates *all* of your outputs into a single new output, thus reducing your wallet size, increasing operation speed and reducing the UTXO-set size of the chain. The downside is that the entire contents of your wallet remain locked until the transaction is validated on-chain, and all outputs are linked to one another, a detriment to your privacy.
-    * `-b` `--ttl_blocks` allows you to specify a number of blocks into the future, after which a wallet should refuse to process the transaction further. This can be useful for putting time limits on transaction finalization, but please note this is not enforced at the epic protocol level; it's up to individual wallets whether they wish to respect this flag.
+    !!! note ""
+        In order to use the TOR method make sure its client is available in your system and added to env PATH.
+    
+=== "File Method"
+    This transaction method is used to create transaction files, it is up to the users how they will exchange them, 
+    i.e. using e-mail, messangers, Bluetooth, USB sticks, etc.
+
+    This method requires few steps to complete the transaction:
+
+    1. Sender is initializing the process and creates the transaction file with:
+    > ```epic-wallet send -d <file_name> <amount>```
+
+    2. Sender sends created transaction file to the receiver
+
+    3. Receiver signs the transaction with:
+    > ```epic-wallet receive -i <file_name>```
+    
+    4. Receiver sends back the updated transaction file to the sender
+
+    5. Sender finalizes the transaction with:
+    > ```epic-wallet finalize -i <file_name>```
+
+    After 5th step the transaction is propagaded to the network and can not be cancelled.
+
+> Optional send arguments
+    ```
+    -o, --change_outputs <change_outputs>     Number of change outputs to generate [default: 1]
+    -g, --message <message>                   Optional participant message to include
+    -c, --min_conf <minimum_confirmations>    Minimum number of confirmations required for an output to be spendable
+                                              [default: 10]
+    -z, --proof_address <proof_address>       Recipient proof address. If not using TOR, must be provided seprarately by
+                                              the recipient
+    -s, --selection <selection_strategy>      Coin/Output selection strategy. [default: smallest]  [possible values:
+                                              all, smallest]
+    -t, --stored_tx <stored_tx>               If present, use the previously stored Unconfirmed transaction with given
+                                              id
+    -b, --ttl_blocks <ttl_blocks>             If present, the number of blocks from the current after which wallets
+                                              should refuse to process transactions further
+    ```
 
 ### `receive`
 The `receive` command processes the `transaction file` provided by the sender.
 
-```text
+```
 epic-wallet receive -i <file_name>
 ```
-
-Then your wallet will output another file to provide the other party, so they can `finalize` the transaction.
+Then your wallet will output another file which should be sent back to the sender. 
 <hr />
 
 ### `finalize`
 
 The `finalize` command is the final step to `transaction file` transaction.
 
-```text
+```
 epic-wallet finalize -i <file_name>
 ```
 The transaction building process will then be finalized and your wallet will post it to the network.
 
-If the flag `-n` `--nopost` is present, the transaction would be finalized but not posted.
-<hr />
+
+> Optional finalize arguments
+    ```
+    `-n` `--nopost`     transaction would be finalized but not posted (dry-run)
+    ```
+---
 
 ### `post`
-Manually post a finalized transaction to the network, specify the file path using the `-i` flag.
 
-```text
+Manually post a finalized transaction to the network, specify the file path using the `-i` flag.
+```
 epic-wallet post -i <file_name>
 ```
-<hr />
+---
 
 ### `proof`
+
 EPIC privacy and scalability mechanics mean users no longer have the ability to simply prove a transaction 
 has happened by pointing to it on the chain. By default, whenever a transaction sent to a destination address 
 using `-d`, a payment proof is created.
@@ -212,15 +401,14 @@ Payers can then use these proofs to resolve future payment disputes and prove th
 
 The *sender* can export the payment proof by specifying the transaction id (`-i`) (obtained by [txs](#txs)) or the tx-UUID (`-t`), and choosing the path for the proof file, e.g:
 
-```text
+```
 epic-wallet export_proof -i 4 "proof.txt"
 ```
 
 The sender can then provide this proof to any other wallet for verification.
+Verification example:
 
-Verification for e.g.
-
-```text
+```
 epic-wallet verify_proof proof.txt
 ```
 
@@ -231,25 +419,18 @@ This will ensure that:
 
 On top of that, if the receiver's address in the transaction belongs to the same wallet who's verifying, 
 then the user will be informed as follows:
-
-```text
+```
 epic-wallet verify_proof proof.txt
 ```
 
-```text
-Payment proof's signatures are valid.
-The proof's recipient address belongs to this wallet.
-Command 'verify_proof' completed successfully
-```
-<hr />
+---
 
 ### `outputs`
 To show a list of all your wallet's outputs, type:
 
-```text
+```
 epic-wallet outputs
 ```
-
 !!! text "Wallet Outputs"
     ```
     Wallet Outputs - Account 'default' - Block Height: 814491
@@ -264,12 +445,12 @@ epic-wallet outputs
     ---------------------------------------------------------------------------------------------------------------------------------------------------------------
     ```
 
-By default, only unspent outputs are listed. To show spent outputs, provide the `-s` flag.
-
-```text
-epic-wallet -s outputs
-```
-<hr />
+> Optional outputs arguments
+    ```
+    -f, --show_full_history    If specified, display full outputs history
+    -s                         To show spent outputs      
+    ```
+---
 
 ### `txs`
 Every time an action is performed in your wallet (send, receive, even if uncompleted), 
@@ -297,28 +478,32 @@ epic-wallet txs
     -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     ```
 
-To see the inputs & outputs associated with a particular transaction, as well as the payment proof associated with the transaction, use the `-i` switch and specify the id of the transaction, e.g:
-
-```text
-epic-wallet txs -i 0
-```
-<hr />
+> Optional txs arguments:
+    ```
+    -i, --id <id>        If specified, display transaction with given Id and all associated Inputs/Outputs
+    -t, --txid <txid>    If specified, display transaction with given TxID UUID and all associated Inputs/Outputs
+    ```
+---
 
 ### `cancel`
 Cancels an in-progress created transaction, freeing previously [locked outputs](#info) for use again.
 
-```text
-epic-wallet cancel -i 2
 ```
-To specify which transaction to cancel, use the `-i` flag along with the tx id (obtained by [txs](#txs)) 
-or the `-t` flag with the tx-UUID.
-<hr />
+epic-wallet cancel -i <id>
+```
+
+> Optional cancel arguments
+    ```    
+    -i, --id <id>        The ID of the transaction to cancel
+    -t, --txid <txid>    The TxID UUID of the transaction to cancel
+    ```
+---
 
 ### `scan`
 
 The `scan` command scans the entire UTXO (unspent tx outputs) set from the node, identifies which outputs are yours and updates your wallet state.
 
-```text
+```
 epic-wallet scan
 ```
 
@@ -326,46 +511,72 @@ It should not be necessary to run the scan command manually, as the wallet conti
 outputs on the chain. However, if for some reason you believe your outputs and transactions 
 are in an inconsistent state, you can initiate a manual scan to attempt to fix or restore them.
 
-!!! info "Flags"
+> Optional scan arguments
+    ```
     * `-d` `--delete-unconfirmed` if present, scan and cancel all pending transactions, freeing up any locked outputs.
     * `-h` `--start-height` lets you specify a block height from which to start the manual scan.
-
-
-When initializing a wallet from an existing seed via the epic-wallet `init -r command`, this scan is performed automatically on the first run.
-<hr />
+    ```
+---
 
 ### `recover`
 The `recover` command displays the existing wallet's 24 (or 12) word seed phrase.
-
-```text
+```
 epic-wallet recover
 ```
-<br />
+---
 
-## Arguments
-!!! info
-    There are several global wallet arguments which you can provide for every command.
+## Global Arguments
+> There are several global wallet arguments which you can provide for every command.
+
+### `help`
+
+It will display all the commands and every global flag. 
+
+`epic-wallet help`
+
+To get additional info about a specific command use `-h`, `--help` flag:
+
+`epic-wallet <command> --help`
+ 
+---
 
 ### `account`
-To set the account for a wallet command, provide the `-a` argument.
+The `account` command is used to manage wallet accounts. To print the list of your existing accounts type:
 
-```text
-epic-wallet -a freeman info
 ```
-<hr />
+epic-wallet account
+```
+
+Accounts could be thought of as somewhat similar to different bank accounts under the same name. Each account acts as 
+a separate wallet, but they are all derived from the same master seed. The `default` account is created when you initialize the wallet.
+
+To create a new account, pass the argument `-c` `--create` followed by name of your choice:
+
+```
+epic-wallet account -c <account_name>
+```
+
+All `epic-wallet` commands can then be used with the `-a` flag to specify an account for the command 
+(otherwise `default` account is used):
+
+```
+epic-wallet -a <account_name> <command>
+```
+
+---
 
 ### `password`
-You could specify your password on the directly command line by providing the -p argument. Please note this will place your password in your shell's command history, so use this switch with caution.
-
-```text
-epic-wallet -p mypass info
+You could specify your password on the directly command line by providing the `-p`, `--password` flag. 
+Please note this will place your password in your shell's command history, so use this switch with caution.
 ```
-<hr />
+epic-wallet -p <password> <command>
+```
+---
 
 ### `node`
-The wallet needs to talk to a running epic node in order to remain up-to-date and verify its contents. 
-By default, it tries to contact a node at 127.0.0.1:3413. To change this, either modify the value in the 
-`epic_wallet.toml` file, or alternatively, you can provide the `-r` (se**r**ver) switch to wallet commands.
-```text
-epic-wallet -r "http://192.168.0.2:3413" info
+The wallet should be connected to the `EPIC Node` to stay up-to-date and verify its content. 
+By default, it tries to contact to node at `127.0.0.1:3413`. To change this, either modify the value in the 
+`epic_wallet.toml` file, or alternatively, you can provide the `-r`, `--api_server_address` flag to wallet commands.
+```
+epic-wallet -r <node_api_address> <command>
 ```
