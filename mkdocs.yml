@@ -25,7 +25,7 @@ nav:
 
   - Wallet:
     - Introduction: wallet/index.md
-    - GUI Quick Guide: wallet/guide.md
+#    - GUI Quick Guide: wallet/guide.md
     - Wallet CLI: wallet/cli.md
     - Wallet API:
       - Owner: wallet/owner.md

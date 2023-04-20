@@ -8,7 +8,7 @@
 
 - [:fontawesome-brands-github-square: GUI Wallet :octicons-link-external-16:](https://github.com/EpicCash/epic-gui-wallet) 
 is an open-source electron application, layer of modern front-end interface for `epic-wallet cli`.
-- Download your wallet here: [Linux, Windows, MacOS :octicons-link-external-16:](https://github.com/EpicCash/epic-gui-wallet/releases) 
+- Download **BETA GUI v5** here: [Linux, Windows, MacOS :octicons-link-external-16:](https://github.com/EpicCash/epic-gui-wallet/releases/tag/v5.0.2-beta) 
 
 ??? tip "Build your own development GUI wallet with NodeJS and Electron"
     ## Project setup
@@ -74,11 +74,11 @@ is an open-source electron application, layer of modern front-end interface for 
     vite_aaac001cda9bd8e153789edefb6dc9a99ca6c37adc122692e9
 
 
-## Building and using cli wallet
-- [:fontawesome-brands-medium: **CLI Wallet Guide :octicons-link-external-16:**](https://medium.com/epic-cash/epic-cash-send-and-receive-tutorial-a14945f7798) - EPIC CLI Wallet Tutorial
+## Building and using CLI Wallet
+- [:fontawesome-brands-github-square: **CLI Wallet Guide :octicons-link-external-16:**](https://github.com/EpicCash/documentation/wiki/Epic-wallet) - EPIC CLI Wallet Tutorial
 - [:fontawesome-brands-github-square: **Build EPIC Wallet :octicons-link-external-16:**](https://github.com/EpicCash/epic-wallet/blob/master/doc/build.md) - Epic Wallet - Build, Configuration and Running
 
-## Understand the wallet implementation
+## Understand the Wallet implementation
 - [**:material-web: RUST docs :octicons-link-external-16:**](https://docs.epic-radar.com/epic_wallet)
 - [:fontawesome-brands-github-square: **Transaction UML :octicons-link-external-16:**](https://github.com/EpicCash/epic/blob/master/doc/wallet/transaction/basic-transaction-wf.png) - UML of an interactive transaction (aggregating transaction without `lock_height`)
 - [:fontawesome-brands-github-square: **Wallet TLS setup :octicons-link-external-16:**](https://github.com/EpicCash/epic-wallet/blob/master/doc/tls-setup.md) - How to setup secure connection
