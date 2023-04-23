@@ -1,12 +1,23 @@
 #
 ![img](../assets/wallet-header.png)
 
+## Building and using CLI Wallet
+- [:fontawesome-brands-github: **CLI Wallet Guide :octicons-link-external-16:**](https://github.com/EpicCash/documentation/wiki/Epic-wallet) - EPIC CLI Wallet Tutorial
+- [:fontawesome-brands-github: **Build EPIC Wallet :octicons-link-external-16:**](https://github.com/EpicCash/epic-wallet/blob/master/doc/build.md) - Epic Wallet - Build, Configuration and Running
+
+## Understand the Wallet implementation
+- [**:material-web: RUST docs :octicons-link-external-16:**](https://docs.epic-radar.com/epic_wallet)
+- [:fontawesome-brands-github: **Transaction UML :octicons-link-external-16:**](https://github.com/EpicCash/epic/blob/master/doc/wallet/transaction/basic-transaction-wf.png) - UML of an interactive transaction (aggregating transaction without `lock_height`)
+- [:fontawesome-brands-github: **Wallet TLS setup :octicons-link-external-16:**](https://github.com/EpicCash/epic-wallet/blob/master/doc/tls-setup.md) - How to setup secure connection
+- [:fontawesome-brands-github: **Wallet Design :octicons-link-external-16:**](https://github.com/EpicCash/epic-wallet/blob/emoji/doc/design/design.md) - Epic Wallet + Library Design
+
+---
+
 ## GUI Desktop Wallet
 > Author: :fontawesome-brands-telegram: [**Poolboy51**](https://t.me/poolboy51) | :material-web: [**eccence.digital** :octicons-link-external-16:](https://www.eccence.digital/)
 
-<br /> 
 
-- [:fontawesome-brands-github-square: GUI Wallet :octicons-link-external-16:](https://github.com/EpicCash/epic-gui-wallet) 
+- [:fontawesome-brands-github: GUI Wallet :octicons-link-external-16:](https://github.com/EpicCash/epic-gui-wallet) 
 is an open-source electron application, layer of modern front-end interface for `epic-wallet cli`.
 - Download **BETA GUI v5** here: [Linux, Windows, MacOS :octicons-link-external-16:](https://github.com/EpicCash/epic-gui-wallet/releases/tag/v5.0.2-beta) 
 
@@ -72,16 +83,3 @@ is an open-source electron application, layer of modern front-end interface for 
     Vitex Wallet EPIC Address:
     
     vite_aaac001cda9bd8e153789edefb6dc9a99ca6c37adc122692e9
-
-
-## Building and using CLI Wallet
-- [:fontawesome-brands-github-square: **CLI Wallet Guide :octicons-link-external-16:**](https://github.com/EpicCash/documentation/wiki/Epic-wallet) - EPIC CLI Wallet Tutorial
-- [:fontawesome-brands-github-square: **Build EPIC Wallet :octicons-link-external-16:**](https://github.com/EpicCash/epic-wallet/blob/master/doc/build.md) - Epic Wallet - Build, Configuration and Running
-
-## Understand the Wallet implementation
-- [**:material-web: RUST docs :octicons-link-external-16:**](https://docs.epic-radar.com/epic_wallet)
-- [:fontawesome-brands-github-square: **Transaction UML :octicons-link-external-16:**](https://github.com/EpicCash/epic/blob/master/doc/wallet/transaction/basic-transaction-wf.png) - UML of an interactive transaction (aggregating transaction without `lock_height`)
-- [:fontawesome-brands-github-square: **Wallet TLS setup :octicons-link-external-16:**](https://github.com/EpicCash/epic-wallet/blob/master/doc/tls-setup.md) - How to setup secure connection
-- [:fontawesome-brands-github-square: **Wallet Design :octicons-link-external-16:**](https://github.com/EpicCash/epic-wallet/blob/emoji/doc/design/design.md) - Epic Wallet + Library Design
-
-

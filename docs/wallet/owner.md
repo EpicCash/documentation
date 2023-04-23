@@ -1,26 +1,140 @@
-#
-**Owner (private) wallet API** 
+# Requirements to run the Owner API
+Wallet data does not exist until the user runs `epic-wallet init`. 
+The init command creates `epic-wallet.toml`, prompts the user for a password, creates a seed file, 
+stores the resulting data files in the directory specified in `epic-wallet.toml` and initialises the wallet database.
 
->The Owner API is intended to expose methods that are to be used 
->by the wallet owner. It is vital that this API is not exposed 
->to anyone other than the owner of the wallet, more details about Mimblewimble wallet `owner_api`: 
-[Rust API docs](https://docs.epic-radar.com/epic_wallet_api/trait.OwnerRpcS.html)
+This will allow to run `epic-wallet owner_api` command to start a web server 
+listening for API calls done via `POST` requests with `JSON` payload.
+---
 
-`Basic Authentication` credentials:
+## Security Model
+> Documentation of the Secure API workflow source: 
+> [docs.grin.mw](https://docs.grin.mw/grin-rfcs/text/0004-full-wallet-lifecycle/).
+>
+> Author: **Michael Cordner**
+---
+Given that the Wallet's Owner API needs to deal with sensitive data such as passwords and seed phrases, 
+the API is enhanced with a ECDH and Token-based security model, the primary goals of which are to:
 
-- user: `epic`, 
-- password saved in `~/.epic/main/.api_secret` file.
+* Ensure sensitive data such as passwords or seed phrases are always end-to-end encrypted between the client 
+  and the Owner API server, regardless of what higher-level protocols are used during the exchange.
 
-To change wallet settings go to (by default) `~/.epic/main/epic-wallet.toml` file.
+* Minimize the potential for damage that can be done by a third party listening on the exchange between 
+  a wallet client and its corresponding server.
 
-Make sure your `epic-wallet` listener is running before calling API endpoints.
+* Ensure that sensitive data such as passwords or seed phrases are not resident in server-side memory any 
+  longer than they absolutely need to be.
 
-API call must be done via `POST` requests with `JSON` payload.
-<hr />
+Note that the "SecureAPI" mode and all lifecycle functions are implemented in a V3 API, 
+with the V2 API maintained for a time for backwards compatibility. The V3 API requires all JSON-RPC communication 
+to be encrypted, except for the `init_secure_api` function.
+
+SecureAPI Mode consists of an ECDH key agreement followed by the establishment of an API Token that's used to 
+XOR encrypt the wallet seed on the server side. The negotiated ECDH shared key is used to encrypt all requests and 
+responses between the client and the JSON-RPC layer, while the token must be included in all API requests to
+allow the wallet backend to decrypt the seed. 'Open' wallets store their in-memory seeds XORed against the token, 
+which is temporarily XORed against the supplied token during each request to reproduce the master seed.
+
+ECDH will use `secp256k1` for key agreement.
+
+Encryption of JSON-RPC requests and responses will be performed using AEAD in GCM mode with 128-bit tags, 96 bit nonces, 
+a 16 byte suffix length and an empty vector for the additional data. 
+A 12 byte nonce will be applied in the encryption and included in each request/response to use on the decrypting side.
+
+```json title="Encrypted requests"
+{
+    "jsonrpc": "2.0",
+    "method": "encrypted_request_v3",
+    "id": "1",
+    "params": {
+       "nonce": "ef32...",
+       "body_enc": "e0bcd..."
+    }
+}
+```
+
+### Security Mode: Initialization
+To initialize the Secure API, clients will generate an EC keypair using the `secp256k1` curve, 
+and provide the public key to the Owner API server via a new `init_secure_api` method. 
+Both client and server will calculate the shared key, and store this key for the remainder of the session. 
+The sequence of operations is outlined below:
+
+![img.png](../assets/secure_api_img.png)
+
+The Secure API assumes that all requests (other than the actual call to `init_secure_api` itself) will be encrypted 
+with the shared secret and presented in the above JSON-RPC format. All API calls other than `open_wallet` will be 
+accompanied by a valid encrypted token derived during the call to the open_wallet function. This assumption will 
+remain until the server process exits or a call to a corresponding `close_wallet` function is called.
+
+The shared secret can be refreshed by the client at any time with another call to `init_secure_api` 
+(either encrypted or unencrypted). Closing a wallet via the `close_wallet` function does not regenerate 
+the shared secret but does invalidate the token and drops the XORed seed from memory.
+
+### Security Mode: Opening The Wallet
+Opening a wallet in SecureAPI mode consists of encrypting a request to `open_wallet` (which contains the wallet password)
+with the shared secret `s`. The request is decrypted in the JSON-RPC layer and the password is used in the wallet 
+backend to unlock the wallet master seed. The master seed is stored XORed against a randomly-generated token `T`, 
+which is returned to the client in an encrypted response for inclusion in all further API calls. 
+`T` is valid for the lifetime of the process, or until a corresponding call to `close_wallet`.
+
+![img_1.png](../assets/secure_api_img_1.png)
+
+### Security Mode: Calling API Functions
+Calls to each API function proceed as per a call to `open_wallet`, however each encrypted request must contain the token 
+provided by the `open_wallet` call. The token is XORed against the stored XORed seed to recover the original seed by the 
+backend for the duration of each call, and the seed value is dropped and zeroed from memory when each call returns.
+
+### Basic Authentication
+Each API call by default is also secured with the `basic authentication`, default credentials:
+
+- user: `epic` 
+- password saved in `.owner_api_secret` file by default placed in the main waller directory.
+
+You can change the path of the `.owner_api_secret` file ine the `epic-wallet.toml` configuration file.
+
+Commenting out line starting with `api_secret_path` will disable the basic authentication.
+
+---
+
+## Code Examples
+
+Before running the code make sure your `epic-wallet` web server is running:
+
+`epic-wallet owner_api`
+
+=== "Python"
+    Requires Python 3.10+ and following packages:
+
+    ```shell
+    python3 -m pip install coincurve pycryptodome requests
+    ```
+
+    ??? example "Retrieve wallet balance code example"
+        ~~~python title="secure_api_example.py" linenums="1"
+        {% include "../assets/code/secure_api_example.py" %}
+        ~~~
+
+=== "NodeJS"
+    NodeJS and NPM package manager is required
+    
+    ```shell
+    npm i jayson
+    ```
+
+    ??? example "Retrieve wallet balance and transactions code example"
+        ~~~javascript title="secure_api_example.js" linenums="1"
+        {% include "../assets/code/secure_api_example.js" %}
+        ~~~
+
+    ??? example "Get transaction proof code example"
+        ~~~javascript title="secure_api_example.js" linenums="1"
+        {% include "../assets/code/get_proof_example.js" %}
+        ~~~
+---
 
 ## Methods
 ### `accounts`
-Returns a list of accounts stored in the wallet (i.e. mappings between user-specified labels and BIP32 derivation paths.
+Returns a list of accounts stored in the wallet (i.e. mappings between user-specified labels and BIP32 derivation paths).
 
 === "Request"
     ```JSON
@@ -28,7 +142,7 @@ Returns a list of accounts stored in the wallet (i.e. mappings between user-spec
         "jsonrpc": "2.0",
         "method": "accounts",
         "params": {
-            "token": "d202964900000000d302964900000000d402964900000000d502964900000000"
+            "token": "<token_obtained_via_open_wallet>"
 	},
 	"id": 1
     }
@@ -59,7 +173,7 @@ Creates a new ‘account’, which is a mapping of a user-specified label to a B
         "jsonrpc": "2.0",
         "method": "create_account_path",
         "params": {
-            "token": "d202964900000000d302964900000000d402964900000000d502964900000000",
+            "token": "<token_obtained_via_open_wallet>",
             "label": "account1"
     },
     "id": 1
@@ -86,7 +200,7 @@ Sets the wallet’s currently active account. This sets the BIP32 parent path us
         "jsonrpc": "2.0",
         "method": "set_active_account",
         "params": {
-            "token": "d202964900000000d302964900000000d402964900000000d502964900000000",
+            "token": "<token_obtained_via_open_wallet>",
             "label": "default"
         },
         "id": 1
@@ -113,7 +227,7 @@ Returns a list of outputs from the active account in the wallet.
         "jsonrpc": "2.0",
         "method": "retrieve_outputs",
         "params": {
-            "token": "d202964900000000d302964900000000d402964900000000d502964900000000",
+            "token": "<token_obtained_via_open_wallet>",
             "include_spent": false,
             "refresh_from_node": true,
             "tx_id": null
@@ -178,7 +292,7 @@ Returns a list of Transaction Log Entries from the active account in the wallet.
 		"jsonrpc": "2.0",
 		"method": "retrieve_txs",
 		"params": {
-			"token": "d202964900000000d302964900000000d402964900000000d502964900000000",
+			"token": "<token_obtained_via_open_wallet>",
 			"refresh_from_node": true,
 			"tx_id": null,
 			"tx_slate_id": null
@@ -251,9 +365,9 @@ Returns summary information from the active account in the wallet.
         "jsonrpc": "2.0",
         "method": "retrieve_summary_info",
         "params": {
-            "token": "d202964900000000d302964900000000d402964900000000d502964900000000",
+            "token": "<token_obtained_via_open_wallet>",
             "refresh_from_node": true,
-            "minimum_confirmations": 1
+            "minimum_confirmations": 3
         },
         "id": 1
     }
@@ -273,7 +387,7 @@ Returns summary information from the active account in the wallet.
                         "amount_immature": "4373760000",
                         "amount_locked": "0",
                         "last_confirmed_height": "4",
-                        "minimum_confirmations": "1",
+                        "minimum_confirmations": 3",
                         "total": "5831680000"
                     }
 
@@ -292,11 +406,11 @@ Initiates a new transaction as the sender, creating a new Slate object containin
 		"jsonrpc": "2.0",
 		"method": "init_send_tx",
 		"params": {
-			"token": "d202964900000000d302964900000000d402964900000000d502964900000000",
+			"token": "<token_obtained_via_open_wallet>",
 			"args": {
 				"src_acct_name": null,
 				"amount": "60000000",
-				"minimum_confirmations": 2,
+				"minimum_confirmations": 3,
 				"max_outputs": 500,
 				"num_change_outputs": 1,
 				"selection_strategy_is_use_all": true,
@@ -371,7 +485,7 @@ Initiates a new transaction as the sender, creating a new Slate object containin
                 }
                 ]
                 },
-                "offset": "d202964900000000d302964900000000d402964900000000d502964900000000"
+                "offset": "<token_obtained_via_open_wallet>"
             },
             "version_info": {
                     "orig_version": 3,
@@ -393,10 +507,10 @@ Issues a new invoice transaction slate, essentially a request for payment.
 		"jsonrpc": "2.0",
 		"method": "issue_invoice_tx",
 		"params": {
-			"token": "d202964900000000d302964900000000d402964900000000d502964900000000",
+			"token": "<token_obtained_via_open_wallet>",
 			"args": {
 				"amount": "60000000",
-				"message": "Please give me your epics",
+				"message": "EPIC Invoice for...",
 				"dest_acct_name": null,
 				"target_slate_version": null
 			}
@@ -422,7 +536,7 @@ Issues a new invoice transaction slate, essentially a request for payment.
                     "participant_data": [
                         {
                             "id": "1",
-                            "message": "Please give me your epics",
+                            "message": "EPIC Invoice for...",
                             "message_sig": "8f07ddd5e9f5179cff19486034181ed76505baaad53e5d994064127b56c5841bb06e3894e0db51e6015d2181f101d06722094128dbc316f7186b57edd68731cb",
                             "part_sig": null,
                             "public_blind_excess": "035ca9d2d82e0e31bc2add7ef9200066b257d9f72cb16c0e57455277b90e2b3503",
@@ -449,7 +563,7 @@ Issues a new invoice transaction slate, essentially a request for payment.
                                 }
                             ]
                         },
-                        "offset": "d202964900000000d302964900000000d402964900000000d502964900000000"
+                        "offset": "<token_obtained_via_open_wallet>"
                     },
                     "version_info": {
                         "orig_version": 3,
@@ -463,7 +577,7 @@ Issues a new invoice transaction slate, essentially a request for payment.
 <hr />
 
 ### `process_invoice_tx`
-Processes an invoice tranaction created by another party, essentially a request for payment.
+Processes an invoice transaction created by another party, essentially a request for payment.
 
 === "Request"
     ```JSON
@@ -471,7 +585,7 @@ Processes an invoice tranaction created by another party, essentially a request 
 		"jsonrpc": "2.0",
 		"method": "process_invoice_tx",
 		"params": {
-			"token": "d202964900000000d302964900000000d402964900000000d502964900000000",
+			"token": "<token_obtained_via_open_wallet>",
 			"slate": {
 				"amount": "60000000",
 				"fee": "0",
@@ -484,7 +598,7 @@ Processes an invoice tranaction created by another party, essentially a request 
 				"participant_data": [
 					{
 						"id": "1",
-						"message": "Please give me your epics",
+						"message": "EPIC Invoice for...",
 						"message_sig": "1b84c5567b126440995d3ed5aaba0565d71e1834604819ff9c17f5e9d5dd078fd2599ab38942986602e943f684a85992893a6d34367dc7cc2b403a5dcfcdbcd9",
 						"part_sig": null,
 						"public_blind_excess": "028e95921cc0d5be5922362265d352c9bdabe51a9e1502a3f0d4a10387f1893f40",
@@ -511,7 +625,7 @@ Processes an invoice tranaction created by another party, essentially a request 
 							}
 						]
 					},
-					"offset": "d202964900000000d302964900000000d402964900000000d502964900000000"
+					"offset": "<token_obtained_via_open_wallet>"
 				},
 				"version_info": {
 					"orig_version": 3,
@@ -522,11 +636,11 @@ Processes an invoice tranaction created by another party, essentially a request 
 			"args": {
 				"src_acct_name": null,
 				"amount": "0",
-				"minimum_confirmations": 2,
+				"minimum_confirmations": 3,
 				"max_outputs": 500,
 				"num_change_outputs": 1,
 				"selection_strategy_is_use_all": true,
-				"message": "Ok, here are your epics",
+				"message": "Invoice paid.",
 				"target_slate_version": null,
 				"payment_proof_recipient_address": null,
 				"ttl_blocks": null,
@@ -554,7 +668,7 @@ Processes an invoice tranaction created by another party, essentially a request 
                     "participant_data": [
                         {
                             "id": "1",
-                            "message": "Please give me your epics",
+                            "message": "EPIC Invoice for...",
                             "message_sig": "1b84c5567b126440995d3ed5aaba0565d71e1834604819ff9c17f5e9d5dd078fd2599ab38942986602e943f684a85992893a6d34367dc7cc2b403a5dcfcdbcd9",
                             "part_sig": null,
                             "public_blind_excess": "028e95921cc0d5be5922362265d352c9bdabe51a9e1502a3f0d4a10387f1893f40",
@@ -562,7 +676,7 @@ Processes an invoice tranaction created by another party, essentially a request 
                         },
                         {
                             "id": "0",
-                            "message": "Ok, here are your epics",
+                            "message": "Invoice paid.",
                             "message_sig": "8f07ddd5e9f5179cff19486034181ed76505baaad53e5d994064127b56c5841bec8c1cac6cb5770a3c62c9bb95063581cc08bfccd72dac72be8ec4ba5374a9f3",
                             "part_sig": "8f07ddd5e9f5179cff19486034181ed76505baaad53e5d994064127b56c5841bcec20532cbe7ce0a3152b61566785684fea3534b7f834f02f733fa524123ee54",
                             "public_blind_excess": "02802124f21ba02769a3f05ecfe9662e8783fa0bd1a7b7d63cf3aea0ebc0d7af3a",
@@ -599,7 +713,7 @@ Processes an invoice tranaction created by another party, essentially a request 
                                 }
                             ]
                         },
-                        "offset": "d202964900000000d302964900000000d402964900000000d502964900000000"
+                        "offset": "<token_obtained_via_open_wallet>"
                     },
                     "version_info": {
                         "orig_version": 3,
@@ -622,7 +736,7 @@ Finalizes a transaction, after all parties have filled in both rounds of Slate g
         "method": "finalize_tx",
         "id": 1,
         "params": {
-            "token": "d202964900000000d302964900000000d402964900000000d502964900000000",
+            "token": "<token_obtained_via_open_wallet>",
             "slate": {
                 "version_info": {
                     "version": 3,
@@ -633,7 +747,7 @@ Finalizes a transaction, after all parties have filled in both rounds of Slate g
                 "id": "0436430c-2b02-624c-2032-570501212b00",
                 "payment_proof": null,
                 "tx": {
-                    "offset": "d202964900000000d302964900000000d402964900000000d502964900000000",
+                    "offset": "<token_obtained_via_open_wallet>",
                     "body": {
                         "inputs": [
                             {
@@ -762,7 +876,7 @@ Finalizes a transaction, after all parties have filled in both rounds of Slate g
                             }
                         ]
                         },
-                        "offset": "d202964900000000d302964900000000d402964900000000d502964900000000"
+                        "offset": "<token_obtained_via_open_wallet>"
                     },
                     "version_info": {
                         "orig_version": 3,
@@ -785,9 +899,9 @@ Posts a completed transaction to the listening node for validation and inclusion
         "id": 1,
         "method": "post_tx",
         "params": {
-            "token": "d202964900000000d302964900000000d402964900000000d502964900000000",
+            "token": "<token_obtained_via_open_wallet>",
             "tx": {
-            "offset": "d202964900000000d302964900000000d402964900000000d502964900000000",
+            "offset": "<token_obtained_via_open_wallet>",
             "body": {
                 "inputs": [
                     {
@@ -844,7 +958,7 @@ Cancels a transaction. This entails:
 
 Setting the transaction status to either TxSentCancelled or TxReceivedCancelled
 Deleting all change outputs or recipient outputs associated with the transaction
-Setting the status of all assocatied inputs from Locked to Spent so they can be used in new transactions.
+Setting the status of all associated inputs from `Locked` to `Spent`, so they can be used in new transactions.
 
 === "Request"
     ```JSON
@@ -852,7 +966,7 @@ Setting the status of all assocatied inputs from Locked to Spent so they can be 
         "jsonrpc": "2.0",
         "method": "cancel_tx",
         "params": {
-            "token": "d202964900000000d302964900000000d402964900000000d502964900000000",
+            "token": "<token_obtained_via_open_wallet>",
             "tx_id": null,
             "tx_slate_id": "0436430c-2b02-624c-2032-570501212b00"
         },
@@ -881,7 +995,7 @@ Retrieves the stored transaction associated with a TxLogEntry. Can be used even 
         "method": "get_stored_tx",
         "id": 1,
         "params": {
-            "token": "d202964900000000d302964900000000d402964900000000d502964900000000",
+            "token": "<token_obtained_via_open_wallet>",
             "tx": {
                 "amount_credited": "59993000000",
                 "amount_debited": "120000000000",
@@ -958,7 +1072,7 @@ Retrieves the stored transaction associated with a TxLogEntry. Can be used even 
                         }
                     ]
                     },
-                    "offset": "d202964900000000d302964900000000d402964900000000d502964900000000"
+                    "offset": "<token_obtained_via_open_wallet>"
                 }
             }
         }
@@ -975,7 +1089,7 @@ Verifies all messages in the slate match their public keys.
         "method": "verify_slate_messages",
         "id": 1,
         "params": {
-            "token": "d202964900000000d302964900000000d402964900000000d502964900000000",
+            "token": "<token_obtained_via_open_wallet>",
             "slate": {
                 "amount": "1457920000",
                 "fee": "8000000",
@@ -1019,7 +1133,7 @@ Verifies all messages in the slate match their public keys.
                         }
                         ]
                     },
-                    "offset": "d202964900000000d302964900000000d402964900000000d502964900000000",
+                    "offset": "<token_obtained_via_open_wallet>",
                     "payment_proof": null
                 },
                 "version_info": {
@@ -1053,7 +1167,7 @@ Scans the entire UTXO set from the node, identify which outputs belong to the gi
         "jsonrpc": "2.0",
         "method": "scan",
         "params": {
-            "token": "d202964900000000d302964900000000d402964900000000d502964900000000",
+            "token": "<token_obtained_via_open_wallet>",
             "start_height": 1,
             "delete_unconfirmed": false
         },
@@ -1081,7 +1195,7 @@ Retrieves the last known height known by the wallet. This is determined as follo
         "jsonrpc": "2.0",
         "method": "node_height",
         "params": {
-            "token": "d202964900000000d302964900000000d402964900000000d502964900000000"
+            "token": "<token_obtained_via_open_wallet>"
         },
         "id": 1
     }
@@ -1183,7 +1297,7 @@ Set the top-level directory for the wallet.
 <hr />
 
 ### `create_config`
-Create a epic-wallet.toml configuration file in the top-level directory for the specified chain type.
+Create na `epic-wallet.toml` configuration file in the top-level directory for the specified chain type.
 
 === "Request"
     ```JSON
@@ -1420,7 +1534,7 @@ Starts a background wallet update thread, which performs the wallet update proce
         "jsonrpc": "2.0",
         "method": "start_updater",
         "params": {
-            "token": "d202964900000000d302964900000000d402964900000000d502964900000000",
+            "token": "<token_obtained_via_open_wallet>",
             "frequency": 30000
         },
         "id": 1
@@ -1497,7 +1611,7 @@ Retrieve the public “addresses” associated with the active account at the gi
         "jsonrpc": "2.0",
         "method": "get_public_address",
         "params": {
-            "token": "d202964900000000d302964900000000d402964900000000d502964900000000",
+            "token": "<token_obtained_via_open_wallet>",
             "derivation_index": 0
         },
         "id": 1
@@ -1528,7 +1642,7 @@ Retrieve the public proof “addresses” associated with the active account at 
         "jsonrpc": "2.0",
         "method": "get_public_proof_address",
         "params": {
-            "token": "d202964900000000d302964900000000d402964900000000d502964900000000",
+            "token": "<token_obtained_via_open_wallet>",
             "derivation_index": 0
         },
         "id": 1
@@ -1547,7 +1661,8 @@ Retrieve the public proof “addresses” associated with the active account at 
 <hr />
 
 ### `proof_address_from_onion_v3`
-Helper function to convert an Onion v3 address to a payment proof address (essentially exctacting and verifying the public key)
+Helper function to convert an Onion v3 address to a payment proof address 
+(essentially extracting and verifying the public key).
 
 === "Request"
     ```JSON
@@ -1581,7 +1696,7 @@ Returns a single, exportable PaymentProof from a completed transaction within th
         "jsonrpc": "2.0",
         "method": "retrieve_payment_proof",
         "params": {
-            "token": "d202964900000000d302964900000000d402964900000000d502964900000000",
+            "token": "<token_obtained_via_open_wallet>",
             "refresh_from_node": true,
             "tx_id": null,
             "tx_slate_id": "0436430c-2b02-624c-2032-570501212b00"
@@ -1614,7 +1729,7 @@ Verifies a PaymentProof. This process entails:
 Ensuring the kernel identified by the proof’s stored excess commitment exists in the kernel set.
 Reproducing the signed message amount|kernel_commitment|sender_address.
 Validating the proof’s recipient_sig against the message using the recipient’s address as the public key.
-Validating the proof’s sender_sig against the message using the senders’s address as the public key.
+Validating the proof’s sender_sig against the message using the sender's address as the public key.
 
 === "Request"
     ```JSON
@@ -1622,7 +1737,7 @@ Validating the proof’s sender_sig against the message using the senders’s ad
         "jsonrpc": "2.0",
         "method": "verify_payment_proof",
         "params": {
-            "token": "d202964900000000d302964900000000d402964900000000d502964900000000",
+            "token": "<token_obtained_via_open_wallet>",
             "proof": {
                 "amount": "600000000",
                 "excess": "08d09187cb93cf5d6b97b28e8ca529912bf35ec8773d3e9af9b3c174a270dc7f05",
@@ -1681,7 +1796,8 @@ Set the TOR configuration for this instance of the OwnerAPI, used during init_se
 <hr />
 
 ### `set_epicbox_config`
-Set the Epicbox configuration for this instance of the OwnerAPI, used during init_send_tx when send args are present and a Epicbox address is specified.
+Set the Epicbox configuration for this instance of the OwnerAPI, 
+used during init_send_tx when send args are present and an Epicbox address is specified.
 
 === "Request"
     ```JSON

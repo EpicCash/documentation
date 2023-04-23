@@ -5,12 +5,12 @@ site_description: 'EPIC Documentation'
 
 # Repository
 repo_name: docs.epic.tech
-repo_url: https://github.com/EpicCash/epiccash.github.io
+repo_url: https://github.com/blacktyger/epiccash.github.io
 
 plugins:
+    - include-markdown
     - search
     - tags
-
 nav:
   - Welcome: index.md
 
@@ -26,11 +26,10 @@ nav:
   - Wallet:
     - Introduction: wallet/index.md
 #    - GUI Quick Guide: wallet/guide.md
-    - Wallet CLI: wallet/cli.md
-    - Wallet API:
-      - Owner: wallet/owner.md
-      - Foreign: wallet/foreign.md
-      - Errors: wallet/errors.md
+    - CLI: wallet/cli.md
+    - Foreign API: wallet/foreign.md
+    - Owner API: wallet/owner.md
+    - API Errors: wallet/errors.md
 
   - Python SDK:
     - Introduction: python_sdk/under_construction.md
@@ -50,6 +49,9 @@ theme:
         - navigation.tracking
         - navigation.sections
         - content.code.annotate
+        - content.code.select
+        - content.code.copy
+
 
     palette:
     # Palette toggle for light mode
