@@ -290,9 +290,9 @@ epic-wallet owner_api
 
 ### `Send`
 The `send` command is the first step of building an interactive transaction. 
-The transaction can either be an instant, automated and synchronous exchange through 
-`HTTP/S`, `EPICBOX` or `TOR` methods, or it can be process, in which each step is done manually 
-by exchanging `transaction files` or `emoji strongs` between the users. 
+The transaction can either be an automated and synchronous exchange through 
+`HTTP/S`, `EPICBOX` or `TOR` methods, or it can be multiple step process done manually 
+by exchanging `transaction files` or `emoji strings` between the users. 
 
 === "HTTP/S Method"
     To use this method both sender and receiver have to run `HTTP/S Listener`. 
@@ -300,7 +300,7 @@ by exchanging `transaction files` or `emoji strongs` between the users.
     Receiver should share the URL address (IP or domain) pointing to his listener and make sure 
     it is reachable for the sender, i.e. port (by default `3415`) is open and firewall rule created.
 
-    Transaction will be successfully finished if and only if when both parties are online during the process 
+    Transaction will be successfully finished if and only if both parties are online during the process 
     which should take no longer than few seconds. Failed transaction can be cancelled by sender to unlock locked funds.
 
     ```
@@ -333,7 +333,7 @@ by exchanging `transaction files` or `emoji strongs` between the users.
 === "TOR Method"
     To use this method both sender and receiver have to run `HTTP/S Listener`. 
 
-    Transaction will be successfully finished if and only if when both parties are online during the process 
+    Transaction will be successfully finished if and only if both parties are online during the process 
     which should take less than a minute. Failed transaction can be cancelled by sender to unlock locked funds.
     
     !!! info "How to get your TOR receiving address"
