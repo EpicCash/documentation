@@ -95,6 +95,11 @@ You can change the path of the `.owner_api_secret` file ine the `epic-wallet.tom
 Commenting out line starting with `api_secret_path` will disable the basic authentication.
 
 ---
+## API Endpoint
+
+When running `epic-wallet` with defaults, owner API URL is available at `localhost:3420/v3/owner`.
+
+---
 
 ## Code Examples
 

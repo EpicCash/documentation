@@ -357,7 +357,7 @@ by exchanging `transaction files` or `emoji strings` between the users.
     This method requires few steps to complete the transaction:
 
     1. Sender is initializing the process and creates the transaction file with:
-    > ```epic-wallet send -d <file_name> <amount>```
+    > ```epic-wallet send -m file -d <file_name> <amount>```
 
     2. Sender sends created transaction file to the receiver
 

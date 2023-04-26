@@ -5,16 +5,16 @@
 > with the owner's wallet. This API can be exposed to the outside world. 
 > More details: [Rust API docs](https://docs.epic-radar.com/epic_wallet_api/trait.ForeignRpc.html)
 
-When running `epic-wallet` with defaults, foreign API URL is available at `localhost:3415`.
+When running `epic-wallet` with defaults, foreign API URL is available at `localhost:3415/v2/foreign`.
 
 `Basic Authentication` credentials:
 
 - user: `epic`, 
 - password saved in `~/.epic/main/.api_secret` file.
 
-To change wallet settings go to (by default) `~/.epic/main/epic-wallet.toml` file.
+In order to change API URL, authentication and other settings go to (by default) `~/.epic/main/epic-wallet.toml` file.
 
-Make sure your `epic-wallet` listener is running before calling API endpoints.
+Make sure your `epic-wallet listen -m http` is running before calling API endpoints.
 
 API call must be done via `POST` requests with `JSON` payload.
 <hr />

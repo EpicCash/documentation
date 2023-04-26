@@ -17,7 +17,7 @@ When running `epic` node with defaults, foreign API URL is available at `localho
 - user: `epic`, 
 - password saved in `~/.epic/main/.api_secret` file.
 
-In order to change URL, authentication and other settings go to (by default) `~/.epic/main/epic-server.toml` file.
+In order to change API URL, authentication and other settings go to (by default) `~/.epic/main/epic-server.toml` file.
 
 Make sure your `epic` node is running before calling API endpoints.
 
