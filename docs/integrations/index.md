@@ -85,40 +85,42 @@ methods are basically different methods of exchanging slates to improve end-user
 !!! abstract "Explaining Transaction Slates"
     Imagine you want to give to your friend collection of 2 precious gold coins. In order to make that 
     transaction legit for the IRS, you are asked to write down some details, and they gave you a template for it:
-
-    ```toml title="Transaction Slate Template"
-    Date: 
-    Participiants:
-        - Sender    : 
-        - Recipient : 
-    Products:
-        - 
-        -
-    Description: 
-    Signatures:
-        - Sender    : 
-        - Recipient :
-        - Coin Dealer :
-    ```
+    
+    === ":material-file-star: Transaction Slate Template"
+        ```toml
+        Date: 
+        Participiants:
+            - Sender    : 
+            - Recipient : 
+        Products:
+            - 
+            -
+        Description: 
+        Signatures:
+            - Sender    : 
+            - Recipient :
+            - Coin Dealer :
+        ```
 
     ---
 
     - Using this template you are asked to write down an initial details:
 
-    ```toml title="Transaction Slate Round I"
-    Date: "2023-04-26"
-    Participiants:
-        - Sender    : "John Doe"
-        - Recipient : 
-    Products:
-        - "Coin 1"
-        - "Coin 2"
-    Description: "Gold coins, perfect condition."
-    Signatures:
-        - Sender      : "<John's Signature>"
-        - Recipient   :
-        - Coin Dealer :
-    ```
+    === ":material-file-clock: Transaction Slate Round I"
+        ```toml
+        Date: "2023-04-26"
+        Participiants:
+            - Sender    : "John Doe"
+            - Recipient : 
+        Products:
+            - "Coin 1"
+            - "Coin 2"
+        Description: "Gold coins, perfect condition."
+        Signatures:
+            - Sender      : "<John's Signature>"
+            - Recipient   :
+            - Coin Dealer :
+        ```
 
     ---
 
@@ -127,20 +129,21 @@ methods are basically different methods of exchanging slates to improve end-user
     will be delivered and processed by your friend it will look like this (assuming friend is happy with the 
     details and is whiling to sign it):
     
-    ```toml title="Transaction Slate Round II"
-    Date: "2023-04-26"
-    Participiants:
-        - Sender    : "John Doe"
-        - Recipient : "Steven Clark"
-    Products:
-        - "Coin 1"
-        - "Coin 2"
-    Description: "Gold coins, perfect condition."
-    Signatures:
-        - Sender      : "<John's Signature>"
-        - Recipient   : "<Steve's Signature>"
-        - Coin Dealer :
-    ```
+    === ":material-file-clock: Transaction Slate Round II"
+        ```toml
+        Date: "2023-04-26"
+        Participiants:
+            - Sender    : "John Doe"
+            - Recipient : "Steven Clark"
+        Products:
+            - "Coin 1"
+            - "Coin 2"
+        Description: "Gold coins, perfect condition."
+        Signatures:
+            - Sender      : "<John's Signature>"
+            - Recipient   : "<Steve's Signature>"
+            - Coin Dealer :
+        ```
 
     ---    
 
@@ -148,20 +151,21 @@ methods are basically different methods of exchanging slates to improve end-user
     an authorised IRS officer with you to prove the authenticity of the coins, approve document paramaters and 
     put the final signature on it:
 
-    ```toml title="Transaction Slate Round III"
-    Date: "2023-04-26"
-    Participiants:
-        - Sender    : "John Doe"
-        - Recipient : "Steven Clark"
-    Products:
-        - "Coin 1"
-        - "Coin 2"
-    Description: "Gold coins, perfect condition."
-    Signatures:
-        - Sender      : "<John's Signature>"
-        - Recipient   : "<Steve's Signature>"
-        - IRS officer : "<Officer's Signature>"
-    ```
+    === ":material-file-check: Transaction Slate Round III"
+        ```toml
+        Date: "2023-04-26"
+        Participiants:
+            - Sender    : "John Doe"
+            - Recipient : "Steven Clark"
+        Products:
+            - "Coin 1"
+            - "Coin 2"
+        Description: "Gold coins, perfect condition."
+        Signatures:
+            - Sender      : "<John's Signature>"
+            - Recipient   : "<Steve's Signature>"
+            - IRS officer : "<Officer's Signature>"
+        ```
 
     - Our document is now ready to be posted to the IRS office where it will be added
     to their books and your friend will become officialy the owner of the collection.
@@ -186,7 +190,16 @@ methods are basically different methods of exchanging slates to improve end-user
     - **Round III** is like functions:
         1. [`finalize_tx`](https://docs.epic-radar.com/epic_wallet_api/struct.Owner.html#method.finalize_tx){target=_blank}
         2. [`post_tx`](https://docs.epic-radar.com/epic_wallet_api/struct.Owner.html#method.post_tx){target=_blank} 
-        
+
+    !!! success "The EPIC Blockchain is Not Like The IRS!"
+        Now when we know how this workflow looks like on the transparent and public example, 
+        let's outline the key differences compared to secure and private blockchain like **EPIC Mimblewimble**:
+
+        - Participiant's data is not linkable, nor trackable, no addresses or meta-data stored
+        - Transaction details are encrypted (sealed) and noone can look inside, only engaged wallets can decrypt the details
+        - Signatures are secured by cryptographic functions, not possible to cheat
+        - Blockchain keeps data needed to prove ownership of the coins, but does
+            not say (or know) who actually owns them, no way to query asset balances by anyone except the owner
 ---
 
 ## Wallet Addresses
