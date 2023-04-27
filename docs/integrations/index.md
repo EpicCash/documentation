@@ -77,14 +77,14 @@ that is not complete, can not be posted to the network.</sup>
 ---
 
 ### Transaction Slates
-To exchange the EPIC coins, users must exchange transaction slates in one form or another. A transaction slate is a blob 
-containing the necessary data to be included at each step of the transaction building process. Different transaction 
-methods are basically different methods of exchanging slates to improve end-user's experience.
+To exchange the EPIC coins, users must exchange transaction slates in one form or another. A transaction slate is a blob
+containing the necessary data to be included at each step of the transaction building process. Different transaction
+methods are basically different methods of exchanging slates to improve the end-user's experience.
 
 
 !!! abstract "Explaining Transaction Slates"
-    Imagine you want to give to your friend collection of 2 precious gold coins. In order to make that 
-    transaction legit for the IRS, you are asked to write down some details, and they gave you a template for it:
+    Imagine you want to give someone a collection of two precious gold coins. In order to make that transaction
+    legit for the accounting purposes, you document some details, such as:
     
     === ":material-file-star: Transaction Slate Template"
         ```toml
@@ -104,9 +104,9 @@ methods are basically different methods of exchanging slates to improve end-user
 
     ---
 
-    - Using this template you are asked to write down an initial details:
+    - So here, we enter the specific details, such as:
 
-    === ":material-file-clock: Transaction Slate Round I"
+    === ":material-file-clock: Transaction Slate: Round I"
         ```toml
         Date: "2023-04-26"
         Participiants:
@@ -124,12 +124,11 @@ methods are basically different methods of exchanging slates to improve end-user
 
     ---
 
-    - Now you need your friend to fill up his part, since he is far from you, you have to use a delivery company 
-    to send the document, and it will be a special service to ensure your document is properly secured. Once it 
-    will be delivered and processed by your friend it will look like this (assuming friend is happy with the 
-    details and is whiling to sign it):
+    - Now it's time to send the document to the receiver, let's use a delivery company, 
+    with an extra service to ensure your document is properly secured. Once it 
+    will be delivered and processed by the receiver it may look like this:
     
-    === ":material-file-clock: Transaction Slate Round II"
+    === ":material-file-clock: Transaction Slate: Round II"
         ```toml
         Date: "2023-04-26"
         Participiants:
@@ -147,11 +146,11 @@ methods are basically different methods of exchanging slates to improve end-user
 
     ---    
 
-    - Now, using the same delivery service, your firend is sending the doc back to you. When it arrives, there is 
-    an authorised IRS officer with you to prove the authenticity of the coins, approve document paramaters and 
-    put the final signature on it:
+    - Now, using the same delivery service, the sender-signed document is returned to you. When it arrives, 
+        there is an authorized accountant with you to prove the authenticity of the coins, approve the document 
+        parameters and put the final signature on it:
 
-    === ":material-file-check: Transaction Slate Round III"
+    === ":material-file-check: Transaction Slate: Round III"
         ```toml
         Date: "2023-04-26"
         Participiants:
@@ -167,39 +166,37 @@ methods are basically different methods of exchanging slates to improve end-user
             - IRS officer : "<Officer's Signature>"
         ```
 
-    - Our document is now ready to be posted to the IRS office where it will be added
-    to their books and your friend will become officialy the owner of the collection.
+    - The process is finished, the document is now a valid proof of ownership of the coins!
     
     ---
 
-    Doesn't sound that compolicated, right? Now, let's translate that example to the **Mimblewimble** language:
+    Doesn't sound that complicated, right? Now, let's translate that example to the **Mimblewimble** language:
     
-    - **Transaction slate** is like the document we exchange with our friend
-    - **JSON payload** is like details in the document, each round adds more details
-    - **Transaction method** (i.e. HTTP/S, Epicbox, etc.) is lke the delivery company
-    - **Data encryption** is like this special delivery service protecting your parcel
-    - **The Blockchain** is like IRS - it makes sure everyone is honest during the transaction and they keep proof 
-        of ownership in their books.
+    - **Transaction slate** is like the document we exchange with the receiver,
+    - **JSON payload** is like content of that document, each round adds more details,
+    - **Transaction method** (i.e. HTTP/S, Epicbox, etc.) is like the delivery company,
+    - **Data encryption** is this special delivery service protecting your parcel,
+    - **The Mimblewimble** protocol, same as the authorized accountant, validates the entire process
     
     <br />
 
-    And the order of the steps above can be transalted to a wallet functions (API calls) as follows:
+    The three rounds mentioned above are related to the order of the functions used by the wallet:
 
-    - **Round I** is like function [`init_send_tx`](https://docs.epic-radar.com/epic_wallet_api/struct.Owner.html#method.issue_invoice_tx){target=_blank}
-    - **Round II** is like function  [`receive_txs`](https://docs.epic-radar.com/epic_wallet_api/struct.Foreign.html#method.receive_tx){target=_blank}
-    - **Round III** is like functions:
+    - **Round I**: [`init_send_tx`](https://docs.epic-radar.com/epic_wallet_api/struct.Owner.html#method.issue_invoice_tx){target=_blank}
+    - **Round II**:  [`receive_txs`](https://docs.epic-radar.com/epic_wallet_api/struct.Foreign.html#method.receive_tx){target=_blank}
+    - **Round III**:
         1. [`finalize_tx`](https://docs.epic-radar.com/epic_wallet_api/struct.Owner.html#method.finalize_tx){target=_blank}
         2. [`post_tx`](https://docs.epic-radar.com/epic_wallet_api/struct.Owner.html#method.post_tx){target=_blank} 
 
-    !!! success "The EPIC Blockchain is Not Like The IRS!"
-        Now when we know how this workflow looks like on the transparent and public example, 
-        let's outline the key differences compared to secure and private blockchain like **EPIC Mimblewimble**:
+    !!! success "Public vs Private"
+        Now that we know how it works using a transparent and public ledger, 
+        let's outline the key differences when compared to the secure and private **EPIC Blockchain**:
 
-        - Participiant's data is not linkable, nor trackable, no addresses or meta-data stored
-        - Transaction details are encrypted (sealed) and noone can look inside, only engaged wallets can decrypt the details
-        - Signatures are secured by cryptographic functions, not possible to cheat
-        - Blockchain keeps data needed to prove ownership of the coins, but does
-            not say (or know) who actually owns them, no way to query asset balances by anyone except the owner
+        - Participiant's data is not linkable, nor trackable, no addresses or meta-data are stored,
+        - Transaction details are encrypted (sealed), and no one except the participating wallets can look inside, 
+        - Signatures are secured by cryptographic functions, not possible to cheat,
+        - Blockchain keeps the data needed to prove ownership of the coins, but does,
+            not say (or know) who actually owns them, there is no way to query asset balances
 ---
 
 ## Wallet Addresses
