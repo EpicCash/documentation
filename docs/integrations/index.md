@@ -17,7 +17,12 @@ The **Epic-Cash Blockchain** does not store any transaction data on the ledger, 
 Transactions (**NIT**)_, that means exchanging _transaction slates<sup>**1**</sup>_ requires all the 
 participants to sign the transaction before posting it to the network. Sender can not finish the transaction 
 without the recipient signature, and this introduces need of both wallets being online at some point during 
-the process. 
+the process.
+
+<sup>**1**. Transaction slate - partial transaction data (i.e. participants details, amounts, used outputs, etc.) 
+that is not complete yet.</sup>
+
+---
 
 ### Overview
 
@@ -70,10 +75,6 @@ in the wallet local database have value `True`.**
     One of the big advantages of the NIT's implementation is no risk of losing funds due to mistyped wallet 
     address or connection problems, transaction either appears in the right wallet or nothing happens.
 
-<br />
-
-<sup>**1**. Transaction slate - partial transaction data (i.e. participants details, amounts, used outputs, etc.) 
-that is not complete, can not be posted to the network.</sup>
 ---
 
 ### Transaction Slates
@@ -99,7 +100,7 @@ methods are basically different methods of exchanging slates to improve the end-
         Signatures:
             - Sender    : 
             - Recipient :
-            - Coin Dealer :
+            - Accountant :
         ```
 
     ---
@@ -119,7 +120,7 @@ methods are basically different methods of exchanging slates to improve the end-
         Signatures:
             - Sender      : "<John's Signature>"
             - Recipient   :
-            - Coin Dealer :
+            - Accountant :
         ```
 
     ---
@@ -141,7 +142,7 @@ methods are basically different methods of exchanging slates to improve the end-
         Signatures:
             - Sender      : "<John's Signature>"
             - Recipient   : "<Steve's Signature>"
-            - Coin Dealer :
+            - Accountant :
         ```
 
     ---    
@@ -163,7 +164,7 @@ methods are basically different methods of exchanging slates to improve the end-
         Signatures:
             - Sender      : "<John's Signature>"
             - Recipient   : "<Steve's Signature>"
-            - IRS officer : "<Officer's Signature>"
+            - Accountant : "<Accountant's Signature>"
         ```
 
     - The process is finished, the document is now a valid proof of ownership of the coins!
@@ -195,7 +196,7 @@ methods are basically different methods of exchanging slates to improve the end-
         - Participiant's data is not linkable, nor trackable, no addresses or meta-data are stored,
         - Transaction details are encrypted (sealed), and no one except the participating wallets can look inside, 
         - Signatures are secured by cryptographic functions, not possible to cheat,
-        - Blockchain keeps the data needed to prove ownership of the coins, but does,
+        - Blockchain keeps the data needed to prove ownership of the coins, but does
             not say (or know) who actually owns them, there is no way to query asset balances
 ---
 
