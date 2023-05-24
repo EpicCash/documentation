@@ -7,7 +7,7 @@
 
 let password = ""; // your wallet pass
 let port = "3420"; // :13420 = default floonet port, :3420 default mainnet port
-let api_secret = ""; //`cat ~/.epic/main/.owner.api_secret` or `cat ~/.epic/floo/.owner.api_secret`
+let api_secret = ""; //`cat ~/.epic/main/.owner_api_secret` or `cat ~/.epic/floo/.owner_api_secret`
 
 const jayson = require('jayson/promise');
 const crypto = require('crypto');
