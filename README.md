@@ -1,4 +1,5 @@
 # Epic-Cash Documentation
+
 Made with [Material for MkDocs](https://squidfunk.github.io/mkdocs-material/) framework.
 <hr>
 
@@ -6,7 +7,7 @@ Made with [Material for MkDocs](https://squidfunk.github.io/mkdocs-material/) fr
 
 ### clone and install packages
 
-```
+```bash
 git clone https://github.com/EpicCash/documentation.git
 cd documentation
 ```
@@ -15,12 +16,21 @@ cd documentation
 
 Follow the instructions at https://learn.openwaterfoundation.org/owf-learn-mkdocs/install/
 
-### serve via localhost for changes preview
+Run the following commands to install the necessary dependencies.
+
+```bash
+pip install markdown_captions
+pip install mkdocs-include-markdown-plugin
 ```
+
+### serve via localhost for changes preview
+
+```bash
 mkdocs serve
 ```
 
 ### build documentation
-```
+
+```bash
 mkdocs build
 ```

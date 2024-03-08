@@ -1,0 +1,71 @@
+{
+    "id": 1,
+    "jsonrpc": "2.0",
+    "result": {
+        "Ok": {
+            "amount": "10000000",
+            "fee": "800000",
+            "height": "1974026",
+            "id": "dacaf05e-5c67-477a-a290-0919c78d4af5",
+            "lock_height": "0",
+            "num_participants": 2,
+            "participant_data": [
+                {
+                    "id": "0",
+                    "message": "my message - test",
+                    "message_sig": "f869a73fb9dd14d496f073af3a9890adf0f4010e8be8567e843676f0712d7f1f0fe8c1d96d51d400088161bcd951686ebd179e019b43b321858ef93ceabe725a",
+                    "part_sig": "60d5d49c224c973acecdd8d1689aec3f3c848069fff4439fc5125d5683be0055909e8c9311fc9fc2672a33a1f4b2312ccef39fa0e5c4194727797cf9d02a7e2f",
+                    "public_blind_excess": "025378ff1e64e72f69a4fb9a35e0c9d36647d5255e4a9d45d85d3b6f712b91477a",
+                    "public_nonce": "025500be83565d12c59f43f4ff6980843c3fec9a68d1d8cdce3a974c229cd4d560"
+                },
+                {
+                    "id": "1",
+                    "message": null,
+                    "message_sig": null,
+                    "part_sig": "1ba695ec3f16d669d52a14fa6a6eed196f826acaf9ce46037e6722cc45545c719d6e47bddb3d732010293f9c3d79083d2209aca55b0b8e53c00c52a5077fd74a",
+                    "public_blind_excess": "035f8ab054e30fd642da9638c690613ca61cde8b6c7cc84b386fe4d2604fb39873",
+                    "public_nonce": "02715c5445cc22677e0346cef9ca6a826f19ed6e6afa142ad569d6163fec95a61b"
+                }
+            ],
+            "payment_proof": null,
+            "ttl_cutoff_height": null,
+            "tx": {
+                "body": {
+                    "inputs": [
+                        {
+                            "commit": "0854f3647921d5fd74e3c81859033ebbec96fc3e101169f3ade73edbcf49706ee6",
+                            "features": "Plain"
+                        }
+                    ],
+                    "kernels": [
+                        {
+                            "excess": "09a26f08543fa55afc15201165892c844236415d0541b35980d177f7264e7a2a5d",
+                            "excess_sig": "add904cb9f103f2c9eab4480cd5391c0e91dac5c91ad6ea04318af3bb8c7e1952d0dd450ed3913e37753723d322c3a69f0fc4b4641d0a79ae785ce9ed8a9557a",
+                            "features": "Plain",
+                            "fee": "800000",
+                            "lock_height": "0"
+                        }
+                    ],
+                    "outputs": [
+                        {
+                            "commit": "091517a40cef5ebc3c4cffe19092f5d184584f89c66c779e3847323984bfdfe878",
+                            "features": "Plain",
+                            "proof": "9a4c842629020f2fae09b102b866b0580f85b25f2a55a067909b496b00761151105a00d931490bfc8476b700d07121ad1c81699cf120fb4d04b50a88bf889da6010aff4c58eec4f02df701ede19e28b6507548bb29d23bf8e0d47fec5659743297d39ce33b8e8f47de2ee08c90cea2db54a8649af8e470acccc9be1172fb3d187df4a80c10969ed7211c681d234963464511385c6cc8811b272e8d6f51403001b6896a24c330a4ec3baf2032f1d5a8b6b26d9d4f48e911c161d14feca95e5044b41959c32a83c1abd6f9bc71bd386b681766d59566aaeb068406af9aea6f6f7e456fb926d46e2a7fe84e87efab51bb10c93e1bb45803e97610fee4930f2c5692fbd9069569d8490d4ec111e567c3a0446ec082f5043bc86efa2be43b7ebe231991bda3417979098010092322e76cc6aa538cd2a631d36a4c34bf4b1bd861646e28836ea0d5a82347478781ec4abba29dd59b4cedb01c99cfdc7931b6929af3bb721e0333fff551309c5ee7291e46984fbe89245e8c3df4098ed9cf703202c555ed710be613e5d70d75ac25b900aeabbca2adc598335e1be03ecde650a248e73892f0630bd9a25f8a9796bbabeb7bae13712e90ffba7dbbe8d94dea11dbacd287482e9d89a82168c498d79e481cd563d51c907ed58b8aa4c4c6d0ee0adcadca0f9207e82aeaecaf1d34c4457caad8dada473fb2b37d572c35496ebc720747a4c252be36559fccc073da6ec0fbcf8f3d5ca47e63197cb90d9e73a6df74842ff2e2808db94076f38b5acb745dff20cb7629b84056cfa139ee12526108a3b0d8600ac2e29ab264a2fe4de36600251e00ead350bceec149f6195f1540eeade752b1ca5b4a92d4bfce8cdf3635180b045a3630ceb40eeaf7f8841a2d3dde714042658e96025d017f4d997b4a2a2263ae367ebf2d7e37fbf52a74109b868d6e96b0f9729ee5ce"
+                        },
+                        {
+                            "commit": "09c1406847fee2aca2103b0438253b43bcfc628360928a1617cb7d43d192e601b6",
+                            "features": "Plain",
+                            "proof": "d1b14a845a61174646d33bbee43bdc672411e9b83854d28e64de31e7297a9eb66e11003885ac1bd7943e89e39fc143e07d2963e3b83feb0ee8e8c1df009cf99e0bbd29ef29b7e4755731595c29997301e22acca2096ac72b649a8379c37c12985d624add95d8c80eba6bd2c957d10c7c828a6617f26446123c5688396cda4c0f0e6ba87d55fd1cca30a666338882afe886f6f96a012fbed529789071654408dce115d68ab4a4bc254e16372e4a30c588317ef0f0c21b796424ebe5903c665433feecfa4623c1af118392a130b042e8675b90baedaa7c8f3b9e382d003242b50bc5794d56bc15c04a086d8dd5e74a172f0eb72141d073f2b3d8bd996ebe23bd24090e88be00bc50448c25891adc0efcc2cb38c3eb1474a956340b2878895d3efcbd029b27f8b38ee3e1a3bba0447e7443026d934fd596f8463a996b2b7d4755c1f9390ecb0505f1a44f1a5a4ff4ef0eb7835203e35fa1bef086d16b52c7aa527b706e02957853a4a4468feaba40848db1ab02d86409773239631f06d97c012938823ba5f3cd0bf785687290231cc8200078d2c2ca5f31ac5c62d407317d8a08e99f7dc1526c9f1077a874f4ec22161daaff93f4e857b55a164c2b2967532bf4e3a218a4c6d308fd50846bc486b5910c247bdcebb422453ee5dede4607afe3371b531468ddba77042894f0140142842f6032ce49a23f7857ca7b434707bbff60b6921ab029e911dd5b8160e8a1545e0b337af1d88144d7a7d8aef8a53cc933330aedabfc97ee211129c0ab8c4c91e54ecfaf60d4195d6bb6f4aec11f171ae9c2cb860124810419a76ad4987d4443209084941491f58cbe9522b2555033e3876a2d8a353f8245068236ccc013b28e3de4ae6ee25e8e17989be0ec372cbb7909f3827002472c02284058f8935245f914eacd6380261f3953b98eb8589472dd8fde8e9301ed"
+                        }
+                    ]
+                },
+                "offset": "e5f6e5ebb7bd83d41eed511764bbe27a4927f194d9f28da5d77b7e2dd3ac39d0"
+            },
+            "version_info": {
+                "block_header_version": 6,
+                "orig_version": 3,
+                "version": 3
+            }
+        }
+    }
+} 

@@ -1228,11 +1228,10 @@ Initializes the secure JSON-RPC API. This function must be called and a shared k
     ```JSON
     {
         "jsonrpc": "2.0",
-        "method": "encrypted_request_v3",
+        "method": "init_secure_api",
         "id": "1",
         "params": {
-                "nonce": "ef32...",
-                "body_enc": "e0bcd..."
+        "ecdh_pubkey": "03aac.........."
         }
     }
     ```
@@ -1240,11 +1239,9 @@ Initializes the secure JSON-RPC API. This function must be called and a shared k
     ```json
         {
             "jsonrpc": "2.0",
-            "method": "encrypted_response_v3",
             "id": "1",
-            "Ok": {
-                    "nonce": "340b...",
-                    "body_enc": "3f09c..."
+            "result": {
+                "Ok": "02359.........."
             }
         }
     ```

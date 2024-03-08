@@ -30,6 +30,7 @@ nav:
     - Foreign API: wallet/foreign.md
     - Owner API: wallet/owner.md
     - API Errors: wallet/errors.md
+    - Tx Workflow: wallet/tx_workflow.md 
 
   - Integrations:
       Introduction: integrations/index.md
