@@ -4,4 +4,5 @@ site/
 /package-lock.json
 /Pipfile
 /Pipfile.lock
-/requirements.txt
+/venv
+.idea/

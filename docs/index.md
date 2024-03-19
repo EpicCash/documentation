@@ -11,9 +11,8 @@ please let us know if something should be improved or added, we will do our best
 
 <br />
 
-> - [**:material-web: Epic.tech Website :octicons-link-external-16:**](https://epic.tech) 
+> - [**:material-web: EpicCash.com Website :octicons-link-external-16:**](https://epiccash.com) 
 > - [**:fontawesome-brands-github: Epic-Cash GitHub :octicons-link-external-16:**](https://github.com/EpicCash) 
-> - [**:material-web: Epicentral.io Website :octicons-link-external-16:**](https://epicentral.io/) 
 
 <hr />
 <br />

@@ -11,7 +11,7 @@ Please familiarize yourself with the following before proceeding:
 - [Building and running](https://github.com/EpicCash/documentation/wiki/Linux){target=_blank} EPIC Node 
 - [Building and running](https://github.com/EpicCash/documentation/wiki/Linux){target=_blank} EPIC Wallet
 - [Building and hosting](https://github.com/EpicCash/epicboxnodejs){target=_blank} Epicbox Server
-- Using EPIC Wallet [Foreign](/wallet/foreign/) and [Owner](/wallet/owner/) API
+- Using EPIC Wallet [Foreign](../wallet/foreign.md) and [Owner](../wallet/owner.md) API
 - Web servers, i.e. Nginx
 - Domain configurations
 - Linux and command line skills
@@ -229,7 +229,7 @@ this may change with time, you can rise this number to 2 or 3 blocks.</sup>
         in most cases you can ignore that field.
 
     Either of the mentioned id's are stored on the blockchain, the only field that can be quered on 
-    the [blockchain explorer](explorer.epic.tech) is the value of the `Output Commitment`, which does not
+    the [blockchain explorer](https://explorer.epic.tech) is the value of the `Output Commitment`, which does not
     help with getting any transaction details, it will only show that given output exists on the blockchain.
 
 !!! success "Successful Deposit"

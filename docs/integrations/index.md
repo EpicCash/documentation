@@ -2,7 +2,7 @@
 > :material-web: [**BT Labs** :octicons-link-external-16:](https://www.blacktyg3r.com/)
 
 The **Epic-Cash** project is using the **Mimblewimble** protocol which is still a relatively new technology. 
-[Interactive transactions](/integrations/#interactive-transactions) are not easy to implement in the production, 
+[Interactive transactions](#interactive-transactions) are not easy to implement in the production, 
 and documentation is still developing. Our Blockchain privacy features will bring more challenges than other projects 
 with transparent and public ledgers that are easy to query to get i.e. balances or transaction history by anyone.
 
@@ -270,7 +270,7 @@ firewall rule created.
 Transaction will be successfully finished if and only if both parties are online during the entire process which 
 should take no longer than few seconds. Failed transaction can be cancelled by sender to unlock locked funds.
 
-- How to send with HTTP/S: [**Wallet CLI Documentation **](/wallet/cli/#send)
+- How to send with HTTP/S: [**Wallet CLI Documentation **](../wallet/cli.md#send)
 
 ---
 
@@ -280,7 +280,7 @@ To use this method both sender and receiver have to run `Epicbox listener`.
 Epicbox server will work as temporary storage to make it possible to transact without the need of both parties 
 being online at the same time. It will also remove the need of sharing receivers IP address and handling the ports.
 
-- How to send with Epicbox: [**Wallet CLI Documentation **](/wallet/cli/#send)
+- How to send with Epicbox: [**Wallet CLI Documentation**](../wallet/cli.md#send)
 
 ---
 
@@ -290,7 +290,7 @@ To use this method receiver have to run HTTP/S Listener and share the TOR addres
 Transaction will be successfully finished if and only if both parties are online during the process which 
 should take less than a minute. Failed transaction can be cancelled by sender to unlock locked funds.
 
-- How to send with TOR: [**Wallet CLI Documentation **](/wallet/cli/#send)
+- How to send with TOR: [**Wallet CLI Documentation**](../wallet/cli.md#send)
 
 ---
 

@@ -19,6 +19,7 @@ Follow the instructions at https://learn.openwaterfoundation.org/owf-learn-mkdoc
 Run the following commands to install the necessary dependencies.
 
 ```bash
+pip install mkdocs-material
 pip install markdown_captions
 pip install mkdocs-include-markdown-plugin
 ```

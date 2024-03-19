@@ -251,7 +251,7 @@ Your wallet will listen for requests until the process is cancelled (`<Ctrl-C>`)
         Working HTTP/S Listener will also run local `Foreign API`, it will expose some
         of the wallet functionality needed for others to interact with your wallet.
         
-        More in the [**Foreign API Methods**](/wallet/foreign) section.
+        More in the [**Foreign API Methods**](foreign.md) section.
 
     !!! note ""
         In order to use the TOR make sure its client is available in your system and added to env PATH.
@@ -273,9 +273,9 @@ Your wallet will listen for requests until the process is cancelled (`<Ctrl-C>`)
 ### Web API
 Run the wallet's local web API, useful in production to interact with the wallet interface via HTTP API calls.
 
-Same as [Listeners](/wallet/cli/#listen), it is a background process accessible on the local network (by default port `3420`).
+Same as [Listeners](#listen), it is a background process accessible on the local network (by default port `3420`).
  
-* Go to the [**Owner API Methods**](/wallet/owner) section for more details.
+* Go to the [**Owner API Methods**](owner.md) section for more details.
 
 ```
 epic-wallet owner_api
@@ -397,7 +397,7 @@ by exchanging `transaction files` or `emoji strings` between the users.
     it does not require any extra steps, i.e. running listeners or exchanging data manually.
 
     To use this method wallet requires to have at least 2 accounts, 
-    more about creating and managing them [here](/wallet/cli/#account).
+    more about creating and managing them [here](#account).
 
     ```
     epic-wallet -a <account_1_name> send -m self -d <account_2_name> <amount>

@@ -2,7 +2,7 @@
 
 > You can manage your EPIC Node (server) by using built-in CLI.
 > 
-> Get compiled binaries from [epic.tech/downloads](https://epic.tech/downloads/)
+> Get compiled binaries from [epiccash.com/downloads](https://epiccash.com/downloads/)
 > or build from source [github.com/epiccash](https://github.com/EpicCash)
 
 ## Usage
