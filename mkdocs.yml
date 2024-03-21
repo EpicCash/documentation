@@ -1,10 +1,10 @@
 site_name: EPIC Developers Documentation
-site_url: https://docs.epic.tech
+site_url: https://devdocs.epiccash.com
 site_author: blacktyg3r
 site_description: 'EPIC Documentation'
 
 # Repository
-repo_name: docs.epic.tech
+repo_name: devdocs.epiccash.com
 repo_url: https://github.com/blacktyger/epiccash.github.io
 
 plugins:
