@@ -59,7 +59,7 @@ and provide the public key to the Owner API server via a new `init_secure_api` m
 Both client and server will calculate the shared key, and store this key for the remainder of the session. 
 The sequence of operations is outlined below:
 
-![img.png](../assets/secure_api_img.png)
+![img.png](../assets/images/secure_api_img.png)
 
 The Secure API assumes that all requests (other than the actual call to `init_secure_api` itself) will be encrypted 
 with the shared secret and presented in the above JSON-RPC format. All API calls other than `open_wallet` will be 
@@ -77,7 +77,7 @@ backend to unlock the wallet master seed. The master seed is stored XORed agains
 which is returned to the client in an encrypted response for inclusion in all further API calls. 
 `T` is valid for the lifetime of the process, or until a corresponding call to `close_wallet`.
 
-![img_1.png](../assets/secure_api_img_1.png)
+![img_1.png](../assets/images/secure_api_img_1.png)
 
 ### Security Mode: Calling API Functions
 Calls to each API function proceed as per a call to `open_wallet`, however each encrypted request must contain the token 

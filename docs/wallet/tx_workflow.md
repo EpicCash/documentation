@@ -10,7 +10,7 @@
 
     The above command gives this output:
 
-    ![listenerResponse.png](../assets/tx_workflow/listenerResponse.png)
+    ![listenerResponse.png](../assets/images/listenerResponse.png)
 
 3. Use the below command to send Epic Cash to other wallets.
    
@@ -38,7 +38,7 @@
         
     The above command gives this output:
 
-    ![ownerResponse.png](../assets/tx_workflow/ownerResponse.png)
+    ![ownerResponse.png](../assets/images/ownerResponse.png)
 
 3. Code Examples for JavaScript and Python to send Epic Cash to other wallets are given below.
 

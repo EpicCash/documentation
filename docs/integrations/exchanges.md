@@ -298,7 +298,7 @@ wallets: **Epic-Pay** and **Stack-Wallet**.
 To deliver a much better experience for both - users and developers, we recommend using the `Epicbox Method` 
 to process user's withdraws.
 
-![Epicbox Workflow Scheme](img.png)
+![Epicbox Workflow Scheme](../assets/images/epicbox.png)
 
 !!! success "Recommendation"
     - Using separate wallet instance to process the withdrawals
@@ -533,16 +533,3 @@ to process user's withdraws.
     !!! warning "Always keep less than 100 outputs in your wallet!"
 ---
 
-
-[//]: # (!!! success "")
-
-[//]: # (    - Epicbox code is open-source and everyone can host their own server)
-
-[//]: # (    - Entire communication is secured with end-to-end encryption )
-
-[//]: # (    - Encrypted data is stored only for short period of time )
-
-[//]: # (    - To access transaction slate wallet have to prove its ownership)
-
-[//]: # ()
-[//]: # (    ![Epicbox Security Scheme]&#40;img.png&#41;)

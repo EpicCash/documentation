@@ -1,5 +1,5 @@
 #
-![img](../assets/wallet-header.png)
+![](../assets/images/wallet-header.png)
 
 ## Building and using CLI Wallet
 - [:fontawesome-brands-github: **CLI Wallet Guide :octicons-link-external-16:**](https://github.com/EpicCash/documentation/wiki/Epic-wallet) - EPIC CLI Wallet Tutorial

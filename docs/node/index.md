@@ -1,5 +1,5 @@
 #
-![img](../assets/node-header.png)
+![](../assets/images/node-header.png)
 <hr />
 
 ## Building and running EPIC node
