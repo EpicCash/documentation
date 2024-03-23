@@ -10,7 +10,7 @@ Please familiarize yourself with the following before proceeding:
 
 - [Building and running](https://github.com/EpicCash/documentation/wiki/Linux){target=_blank} EPIC Node 
 - [Building and running](https://github.com/EpicCash/documentation/wiki/Linux){target=_blank} EPIC Wallet
-- [Building and hosting](https://github.com/EpicCash/epicboxnodejs){target=_blank} Epicbox Server
+- [Building and hosting](https://github.com/EpicCash/epicbox-nodejs-install){target=_blank} Epicbox Server
 - Using EPIC Wallet [Foreign](../wallet/foreign.md) and [Owner](../wallet/owner.md) API
 - Web servers, i.e. Nginx
 - Domain configurations

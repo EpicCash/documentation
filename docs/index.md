@@ -1,5 +1,5 @@
 #
-![](assets/images/documentation-header.png)
+![](assets/images/documentation-header_1.png)
 
 Project is created and managed by community made out of volunteers, same as this documentation - 
 please let us know if something should be improved or added, we will do our best to make it better!
